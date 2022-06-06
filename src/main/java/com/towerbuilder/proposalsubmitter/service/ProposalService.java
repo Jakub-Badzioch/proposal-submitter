@@ -8,10 +8,8 @@ import com.towerbuilder.proposalsubmitter.mapper.ProposalMapper;
 import com.towerbuilder.proposalsubmitter.repository.EmployeeRepository;
 import com.towerbuilder.proposalsubmitter.repository.ProposalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -31,9 +29,7 @@ public class ProposalService {
         if (optionalEmployee.isEmpty()) return ResponseEntity.badRequest().body("There is no employee with such id");
         EmployeeEntity employee = optionalEmployee.get();
         ProposalEntity proposal = ProposalMapper.toEntity(proposalDTO);
-        String to = "";
-        String subject = "";
-        String text = "";
+        String text;
         if (employee.getGrade().equals(Grade.F)){
             proposal.setIsAccepted(true);
             text = "Thank you for applying for work travel. We wish you a pleasant trip.";
@@ -43,7 +39,7 @@ public class ProposalService {
         }
         proposal.setEmployee(employee);
         proposalRepository.save(proposal);
-        emailService.sendMail(employee.getEmail(), "confirmation of sending proposal", text);
-        return ResponseEntity.ok().build();
+       // emailService.sendMail(employee.getEmail(), "confirmation of sending proposal", text);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

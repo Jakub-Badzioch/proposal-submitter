@@ -1,5 +1,6 @@
 package com.towerbuilder.proposalsubmitter.entity;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,7 +13,8 @@ import java.time.LocalDateTime;
 public abstract class AbstractEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
+    @EqualsAndHashCode.Include
+    @Column(nullable = false, name = "id", unique = true)
     private Long id;
     @CreationTimestamp
     private LocalDateTime createDate;

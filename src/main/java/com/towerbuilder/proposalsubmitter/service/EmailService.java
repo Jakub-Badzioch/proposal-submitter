@@ -15,13 +15,12 @@ public class EmailService {
         this.javaMailSender = javaMailSender;
     }
 
-    public void sendMail(String toEmail, String subject, String message) {
+    public void sendMail(String toEmail, String subject, String text) {
         var mailMessage = new SimpleMailMessage();
         mailMessage.setTo(toEmail);
         mailMessage.setSubject(subject);
-        mailMessage.setText(message);
+        mailMessage.setText(text);
         mailMessage.setFrom("jakub.badzioch.main@gmail.com");
         javaMailSender.send(mailMessage);
-        System.out.println("WYSLANO MAILA");
     }
 }
