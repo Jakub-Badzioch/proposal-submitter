@@ -1,22 +1,29 @@
 package com.towerbuilder.proposalsubmitter.controller;
 
-import com.towerbuilder.proposalsubmitter.dto.ProposalDTO;
+import com.towerbuilder.proposalsubmitter.mapper.ProposalMapper;
+import com.towerbuilder.proposalsubmitter.model.dto.ProposalAcceptanceDTO;
+import com.towerbuilder.proposalsubmitter.model.dto.ProposalDTO;
 import com.towerbuilder.proposalsubmitter.service.ProposalService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("proposal")
+@RequestMapping("/api/v2/proposals")
 public class ProposalController {
-
-    @Autowired
-    private ProposalService proposalService;
+    private final ProposalService proposalService;
+    private final ProposalMapper proposalMapper;
 
     @PostMapping
-    public ResponseEntity<String> createProposal(@RequestBody ProposalDTO dto) {
-        return proposalService.createProposal(dto);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ProposalDTO createProposal(@RequestBody ProposalDTO dto) {
+        return  proposalMapper.toDTO(proposalService.createProposal(proposalMapper.toEntity(dto), dto.getEmployeeId()));
+    }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ProposalDTO acceptProposal(@RequestBody ProposalAcceptanceDTO dto) {
+        return proposalMapper.toDTO(proposalService.acceptProposal(dto.getProposalId(), dto.getAcceptingEmployeeId()));
     }
 }

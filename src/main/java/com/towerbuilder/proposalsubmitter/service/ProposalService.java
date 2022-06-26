@@ -1,36 +1,28 @@
 package com.towerbuilder.proposalsubmitter.service;
 
-import com.towerbuilder.proposalsubmitter.dto.ProposalDTO;
-import com.towerbuilder.proposalsubmitter.entity.enumeration.Grade;
-import com.towerbuilder.proposalsubmitter.entity.implementation.EmployeeEntity;
-import com.towerbuilder.proposalsubmitter.entity.implementation.ProposalEntity;
-import com.towerbuilder.proposalsubmitter.mapper.ProposalMapper;
+import com.towerbuilder.proposalsubmitter.exception.TooLowGradeException;
+import com.towerbuilder.proposalsubmitter.model.Grade;
+import com.towerbuilder.proposalsubmitter.model.dao.Employee;
+import com.towerbuilder.proposalsubmitter.model.dao.Proposal;
 import com.towerbuilder.proposalsubmitter.repository.EmployeeRepository;
 import com.towerbuilder.proposalsubmitter.repository.ProposalRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import static com.towerbuilder.proposalsubmitter.utils.GradeUtils.isGradesValid;
 
 @Service
+@RequiredArgsConstructor
 public class ProposalService {
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
-    @Autowired
-    private ProposalRepository proposalRepository;
-    @Autowired
-    private EmailService emailService;
+    private final EmployeeRepository employeeRepository;
+    private final ProposalRepository proposalRepository;
+    private final EmailService emailService;
 
-    public ResponseEntity<String> createProposal(ProposalDTO proposalDTO){
-        final Optional<EmployeeEntity> optionalEmployee = employeeRepository.findById(proposalDTO.getEmployeeId());
-        if (optionalEmployee.isEmpty()) return ResponseEntity.badRequest().body("There is no employee with such id");
-        EmployeeEntity employee = optionalEmployee.get();
-        ProposalEntity proposal = ProposalMapper.toEntity(proposalDTO);
+    public Proposal createProposal(Proposal proposal, Long employeeId) {
+        final Employee employee = employeeRepository.getReferenceById(employeeId);
         String text;
-        if (employee.getGrade().equals(Grade.F)){
+        if (employee.getGrade().equals(Grade.F)) {
             proposal.setIsAccepted(true);
             text = "Thank you for applying for work travel. We wish you a pleasant trip.";
         } else {
@@ -39,7 +31,22 @@ public class ProposalService {
         }
         proposal.setEmployee(employee);
         proposalRepository.save(proposal);
-       // emailService.sendMail(employee.getEmail(), "confirmation of sending proposal", text);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        emailService.sendMail(employee.getEmail(), "confirmation of sending proposal", text);
+        return proposal;
+    }
+
+    public Proposal acceptProposal(Long proposalId, Long acceptingEmployeeId) {
+        final Employee acceptor = employeeRepository.getReferenceById(acceptingEmployeeId);
+        final Proposal proposal = proposalRepository.getReferenceById(proposalId);
+        final Employee submitter = proposal.getEmployee();
+        if (isGradesValid(acceptor.getGrade(), submitter.getGrade())) {
+            proposal.setIsAccepted(true);
+            proposalRepository.save(proposal);
+            emailService.sendMail(submitter.getEmail(), "confirmation of accepting proposal",
+                    "Your application has been accepted by " + acceptor.getFirstName()
+                            + " " + acceptor.getLastName() + ". We wish you a pleasant trip");
+            return proposal;
+        }
+        throw new TooLowGradeException("\"An employee with your grade cannot accept this proposal");
     }
 }

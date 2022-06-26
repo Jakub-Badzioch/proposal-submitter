@@ -1,4 +1,4 @@
-package com.towerbuilder.proposalsubmitter.entity.enumeration;
+package com.towerbuilder.proposalsubmitter.model;
 
 public enum TripType {
     PAID_BY_THE_COMPANY,
