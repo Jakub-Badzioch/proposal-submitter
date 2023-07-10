@@ -1,4 +1,4 @@
-package com.towerbuilder.proposalsubmitter.security;
+package com.towerbuilder.proposalsubmitter.security.config;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;

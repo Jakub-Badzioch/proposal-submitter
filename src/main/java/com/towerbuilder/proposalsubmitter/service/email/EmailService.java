@@ -1,4 +1,4 @@
-package com.towerbuilder.proposalsubmitter.service;
+package com.towerbuilder.proposalsubmitter.service.email;
 
 public interface EmailService {
 

@@ -3,6 +3,8 @@ spring:
     url: jdbc:mysql://localhost:3306/proposal_submitter_db
     username: root
     password: Gg7771999
+    tomcat:
+      jdbc-interceptors: org.apache.tomcat.jdbc.pool.interceptor.SlowQueryReport(threshold=2,logFailed=true)
   jpa:
     hibernate:
       ddl-auto: update
@@ -10,11 +12,24 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        session:
+          events:
+            log:
+              QUERIES_SLOWER_THAN_MS: 10
   profiles:
     active: default
 jwt:
   publicKey: classpath:app.pub
   privateKey: classpath:app.key
+logging:
+  level:
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+            transaction: DEBUG
+            type.descriptor.sql.BasicBinder: TRACE
 ---
 spring:
   config:

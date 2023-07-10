@@ -7,27 +7,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GradeUtils {
 
-    public static boolean isGradesValid(final Grade acceptorsGrade, final Grade submittersGrade) {
-        return isFirstLevel(acceptorsGrade, submittersGrade) ||
-                isSecondLevel(acceptorsGrade, submittersGrade) ||
-                isThirdLevel(acceptorsGrade, submittersGrade);
+    public static boolean isGradesValid(final Grade statusChangersGrade, final Grade submittersGrade) {
+        return isFirstLevel(statusChangersGrade, submittersGrade) ||
+                isSecondLevel(statusChangersGrade, submittersGrade) ||
+                isThirdLevel(statusChangersGrade, submittersGrade);
     }
 
-    private static boolean isFirstLevel(final Grade acceptorsGrade, final Grade submittersGrade) {
+    private static boolean isFirstLevel(final Grade statusChangersGrade, final Grade submittersGrade) {
         if (submittersGrade == Grade.A || submittersGrade == Grade.B || submittersGrade == Grade.C) {
-            return acceptorsGrade == Grade.D || acceptorsGrade == Grade.E || acceptorsGrade == Grade.F;
+            return statusChangersGrade == Grade.D || statusChangersGrade == Grade.E || statusChangersGrade == Grade.F;
         }
         return false;
     }
 
-    private static boolean isSecondLevel(final Grade acceptorsGrade, final Grade submittersGrade) {
+    private static boolean isSecondLevel(final Grade statusChangersGrade, final Grade submittersGrade) {
         if (submittersGrade == Grade.D) {
-            return acceptorsGrade == Grade.E || acceptorsGrade == Grade.F;
+            return statusChangersGrade == Grade.E || statusChangersGrade == Grade.F;
         }
         return false;
     }
 
-    private static boolean isThirdLevel(final Grade acceptorsGrade, final Grade submittersGrade) {
-        return submittersGrade == Grade.E && acceptorsGrade == Grade.F;
+    private static boolean isThirdLevel(final Grade statusChangersGrade, final Grade submittersGrade) {
+        return submittersGrade == Grade.E && statusChangersGrade == Grade.F;
     }
 }

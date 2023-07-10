@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public abstract class BasicDTO {
     private Long id;
-    private LocalDateTime createDate;
-    private LocalDateTime updateDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime lastModifiedDate;
+    private String createdBy;
+    private String lastModifiedBy;
     private Long version;
 }

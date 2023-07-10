@@ -20,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         // map nic nie wykona jesli nie zostanie znalezony employee o podanym mailu
-        return employeeRepository.findByEmailEquals(email)
+        return employeeRepository.findByEmail(email)
                 .map(employee -> new User(email, employee.getPassword(), Collections.singletonList(new SimpleGrantedAuthority("ROLE_EMPLOYEE"))))
                 .orElseThrow(() -> new UsernameNotFoundException(email));
     }

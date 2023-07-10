@@ -15,11 +15,11 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Hotel extends Basic {
-    @OneToMany(mappedBy = "hotel")
+public class CompanyBranch extends Basic {
+    @OneToMany(mappedBy = "companyBranch")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<Proposal> proposals;
+    private List<Employee> employees;
     private String name;
     private String country;
     private String city;

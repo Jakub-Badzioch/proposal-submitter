@@ -1,0 +1,81 @@
+Fakty:
+01. response entity zwraca jsona i zamiast stringa powinien byc obiekt ktory bedzie zserializowany do jsona
+02. ta adnotacja @RequiredArgsConstructor generuje konstruktor dla wszystkich finalnych zmiennych
+03. NIE UZYWAJ RESPONSEENTITY TYLKO OBIEKTOW DTO + RESPONSE STATUSY JAKO ADNOTACJE
+    + ADVICE CONTROLLERA DO OBSŁUGI BLEDU I ZWROCENIA ODPOWIEDNIEGO STATUSU
+04. W Maven clean usuwa folder target, compile kompiluje, a package buduje plik jar.
+05. Mappery powinny być w  kontrollerze. W serwisach bazujemy tylko na dao a nie na dto. Wyjątkiem jest np
+    LoginService.login() który może zwracać dto bo nie jest to serwis zmieniający w jakiś sposób stan bazy danych
+06. @JoinColumn(name = "...", referencedColumnName = "id") dodajemy tylko wtedy
+    kiedy chcemy zmienic nazwe kolumny np do adnotacji many to many
+07. Jesli chcialbym miec wiele rol (ADMIN, USER itp) to rozwiazac to poprzez osobna encje Role i
+    wiele rol dla jednego uzytkownika.
+08. Metody zwracające booleana powinny się zaczynać od is albo has
+
+09. Zmieniaj profile w application.yml np.:  profiles:active:mail
+10. Collections.singletonList()/Map() itp są używane do zrobienia struktury danych z tylko jednym elementem
+11. plik .jar:  https://www.samouczekprogramisty.pl/java-z-linii-polecen/
+12. Olać aspekty nikt ich nie używa
+13. W repo jesli wiemy ze zostanie zwrocone 1 lub 0 obiektow to opakowujemy w optionala
+14. Na @OneToMany nie musze dodawac @ToString.Exclude
+    i @EqualsAndHashCode.Exclude z drugiej strony. nie zapetli się i tak
+15. Jak podejmiesz jakąś ważną decyzję architektoniczną to dodaj Architecture Decision Records. Może to być poprostu
+    plik tekstowy z sekcjami: title, status, context, decision, consequences. Albo niech będzie .md jak README
+16. app.key i app.pub są potrzebne aby generować i rozparsowywać(dekodować) tokeny
+17. hibernate działa na encje przyrostowo tzn tylko tworzy i modyfikuje -> po to żeby nie usunąć już obecnych danych
+18. CreatedBy i LastModifiedBy w dao "Basic" to auditing bazujący na security. CreatedBy nazwa tego dzieki czemu sie
+    logujemy wiec bedzie to email w moim przypadku.
+19. rozne poziomy log.:
+    info - informacyjny log
+    error - występują błędy i chcemy je wyświelitć na konsoli
+    warn - coś poszło nie tak ale niekopniecznie jest to nasz problem
+    debug - do debuggowania przy uzycviu konsoli. logi są bardziej szczegółowe
+    trace - bardziej szczegółowy debug
+20. Te logi debug i trace są dlatego ze na produkcji nie jestes wstanie odpalić debuggera a jestem wstanie odpalić logi
+21. W przypadku metod łapiących wyjątki w AdviceController powinnismy zrobić log.warn(e.getMessage()) aby zawsze mozna
+    bylo sprawdzic co się stało jakby np klient się tego domagał
+22. Logowanie to rzecz bardziej związana z security niz z employee/user dlatego metode login() trzymamy w osobnym
+    serwisie LoginService, a nie w EmployeeService gdzie trzymam register(). Register jest związany z employee
+    zwieksza ilosc rekordow w bazie danych.
+23. Brak jakiegokolwiek RequestMapping oznacza defaultowo getMapping
+24. Adnotacje @NotBlank @Pattern na zmiennej password w EmployeeDTO rzucają methodargumentnotvalidexception
+25. Uzywac Spock do testow zamiast Junita
+26. Nie zwracaj w addzie dto bo nie ma potrzeby bo frontend nie skorzysta z responosow w tym przypadku
+    sprawdzaja tylko czy zwróciłem prawidlowy status
+27. Nazwy w kontrollerze powinne byc unikalne per wszystkie kontolelry
+28. Filtrowania zawsze jako requestparams
+29. W pom.xml sortuj dependencje po group id, odpowiedzialnosci, jesli to i to nie pasuje to przed testami, a testy obok testow
+30. w equalsie zawsze porownuj stałą ze zmienną np "jpg".equals(someVariableString)
+31. Do generowania plików roznego rodzaju i ich ściągania w endpointach użyj wzorca fly weight (czyli fabryka + strategia).
+32. Niech zadne dto nie ma idkow. przekazuj je w pathvariable
+33. UUID specjalny typ obiektowy z wiekszym zakresem tylko do ustawiania id
+34. Gdy zmieniasz wersję kontrollera to zachowuj starą wersję kontrollera. Używaj do tego @Depracated na metodzie która
+    jest stara. Następnie stwórz nową metode ze zmienionym kodem i zmień ścieżkę do kontrollera.
+35. Metody w kontrollerach nazywaj mocno opisowo np. getAddressById() zamiast getAddress(). Zbyt ogólne nazewnictwo
+    może spowodować pojawienie się błedów przy generowaniu nowego kodu na frontendzie. W serwisach może być mniej
+    opisowo ale też bez przesady.
+36. Oprócz findCurrentlyLoggedIn() powinno byc getUserById() dla adminów
+37. @PostConstruct - metoda zostanie wykonana odrazu po wykonaniu konstruktora
+38. Strumień dzieli się na 2 rodzaje funkcji: terminalne i pośrednie. Pośrednie nie uruchomią się bez terminalnych.
+    Terminalne to te ktore nie zwracają strumienia. GroupingBy, toMap i partitioningBy tworzą mapy. Dodatkowo toMap i
+    partitioningBy jako wartość zawsze tworzą listę/seta. Function.identity() == object -> object
+39. Zmienna filePath - sciezka relatywna do pliku aby nginx (serwer proxy) mogl zbudowac sciezke absolutną
+40. @Lob daje stringowy typ zmiennej na clob(w oracle)/longtext(w sql) (wiecej niz 255 znakow dla stringa)
+41. Tak się tworzy indexy dla danej encji. Nad klasą dajesz @Table(indexes = @Index(name = "idx_name", columnList = "name", unique = true))
+    W zmiennej columnList mozna dac wiele kolumn po przecinku.
+42. Nie robimy templatów w ymlu tylko w bazie bo jak zrobimy jakąś literówke w templatcie to po prostu zmieniamy
+    to w bazie danych. Jesli bym chcial to zrobic w yml to przy zmianie trzeba wylaczyc program, poprawic blad w kodzie
+    i zrestartowac apke. Przez jakis czas apka nie bedzie dzialac. thymeleaf nie jest juz dobry do robienia frontendu
+    ale jest dobry do generowania roznego rodzaju plikow np html na podstawie roznych templatow.
+43. ctrl + space po nazwie zmiennej to powie mi typ. ogolnie jjak cos nwm to ta komenda
+44. shardowanie (sharding) w elastic searchu (ta sama tabelka na dwoch roznychs serwerach).
+    rooting = niektorzy mowia klucz shardujący
+45. nie musze wywolywac save tylko dodac transactional i zostanie zaktualizowane w bazie
+46. throws tylko do exceptionow a do runtimeow juz nie
+47. Czy jest wgl sens w każdym getById i delete sprawdzać "Data couldn't be found"?: testy jednostkowe są głównie do dokumentacji.
+    Nalezy pisać testy do tych metod na wszelki wypadek aby przy zmianie w logice metody bylo wiadomo jakie ma byc jej dzialanie
+
+
+
+
+
